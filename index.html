@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTH-8">
+    <title>Cercetari operationale</title>
+    <style type="text/css">
+        input[type="text"] {
+            width: 2rem;
+        }
+        select {
+            -webkit-appearance: none; /* For Safari and Chrome */
+            -moz-appearance: none;    /* For Firefox */
+            appearance: none;         /* Standard */
+            width: 2rem;
+        }
+        select, input[type="text"] {
+            height: 100%;
+            padding: 0;
+            text-align: center;
+            border: 1px solid black;
+            box-sizing: border-box;
+            margin: 2px;
+        }
+        .equation {
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        textarea {
+            height: 20rem;
+            width: 20rem;
+            padding: 1rem;
+            font-size: 24px;
+        }
+        body {
+            padding: 2rem;
+        }
+        #result {
+            border: 2px solid black;
+            border-radius: 4px;
+            min-height: 5rem;
+            width: 100%;
+        }
+        canvas {
+            background-color: lightgray;
+        }
+        #exemple {
+            display: flex;
+            height: 15rem;
+        }
+        .exemplu {
+            width: 10rem;
+            height: 100%;
+            border: 1px solid gray;
+            padding: 8px;
+        }
+        h4 {
+            margin: 0;
+            margin-bottom: 8px;
+        }
+        #compute {
+            background-color: aquamarine;
+            margin: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!--div id="data">
+        <h4>Tipul Problemei</h4>
+
+        <form id="problem-type">
+            <label>
+                <input type="radio" name="option" value="minim">
+                minim
+            </label>
+            <br>
+            <label>
+                <input type="radio" name="option" value="maxim">
+                maxim
+            </label>
+        </form>
+        
+        <div id="equation1" class="equation-container" data-nr="1">
+            <h4>Conditia 1</h4>
+            <div class="equation">
+
+                <select name="x1-sign" class="x1-sign">
+                    <option value="+" selected>+</option>
+                    <option value="-">-</option>
+                </select>
+
+                <input name="x1-coefficient" type="text" class="x1-coefficient">
+
+                <span>&middot; X<sub>1</sub></span>
+
+                <select name="x2-sign" class="x2-sign">
+                    <option value="+" selected>+</option>
+                    <option value="-">-</option>
+                </select>
+
+                <input name="x2-coefficient" type="text" class="x2-coefficient">
+
+                <span>&middot; X<sub>2</sub></span>
+
+                <select name="operator" class="operator">
+                    <option value="le" selected>&le;</option>
+                    <option value="ge">&ge;</option>
+                </select>
+
+                <input name="constant" type="text" class="constant">
+
+            </div>
+        </div>
+
+    </div-->
+    <h1>Cercetari Operationale - Metoda Grafica</h1>
+    <div>Introduceti datele problemei conform formatului de mai jos, apoi apasati butonul "Calculeaza"</div>
+    <div id="exemple">
+        <div class="exemplu">
+            <h4>Exemplul 1</h4>
+            <span>max(4X1+ 7X2) <br>
+            X1 + X2 &lt;= 6 <br>
+            X1 - X2 &lt;= 2 <br>
+            X2 >= 1 <br> 
+            X1 >= 0 <br>
+            X2 >= 0 <br><br>
+            </span>
+        </div>
+
+        <div class="exemplu">
+            <h4>Exemplul 2</h4>
+            <span>min(0.4X1 + 0.6X2) <br>
+            2X1 + 4X2 &gt;= 4 <br>
+            6X1 + 3X2 &gt;= 6 <br>
+            X1 >= 0 <br>
+            X2 >= 0 <br><br>
+            </span>
+        </div>
+    </div>
+    <br>
+    <h3>Datele problemei</h3>
+    
+    <div style="display:flex;">
+        <div style="display: flex; flex-direction: column; margin-right: 1rem;;">
+
+            
+            <textarea></textarea>
+            <button id="compute">Calculeaza</button>
+            <h3>Rezultat</h3>
+            <p id="result"></p>
+        </div>
+        <!--button id="new-condition">Adauga Conditie</button-->
+
+        
+
+        <canvas width="800" height="800" style="width:800px; height:800px;"></canvas>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
