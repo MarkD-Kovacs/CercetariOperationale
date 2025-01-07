@@ -373,6 +373,8 @@ var min, max;
 
 function getSolutions() {
     minPoints = [], maxPoints = [];
+    min = undefined;
+    max = undefined;
 
     for (i = 0; i < points.length; i++) {
         if (points[i].isValid) {
