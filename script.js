@@ -6,6 +6,8 @@ class Point {
         this.x = x;
         this.y = y;
         this.isValid = false;
+        this.visited = false;
+        this.equations = [];
     }
 }
 
@@ -88,7 +90,7 @@ function getEquations() {
         }
 
         //linia cu max sau min
-        console.log(line[0]);
+        //console.log(line[0]);
         if (/(max|min)/i.test(line[0])) {
             if (/max/i.test(line[0])) {
                 statement.problemType = 'max';
@@ -155,10 +157,15 @@ function getPoints() {
             const detY = ej.c1 * ei.constant - ei.c1 * ej.constant;
 
             // solutia
-            const x = detX / det;
-            const y = detY / det;
+            var x = detX / det;
+            var y = detY / det;
 
-            points.push(new Point(x, y));
+            if (x == -0) x = 0;
+            if (y == -0) y = 0;
+
+            p = new Point(x, y);
+            p.equations.push(ei, ej);
+            points.push(p);
         }
     }
 
@@ -180,7 +187,7 @@ function getValidPoints() {
     points.forEach(point => {
         var sw = true;
         equations.forEach(equation => {
-            console.log(equation, point.x, point.y, isValid(equation, point.x, point.y))
+            //console.log(equation, point.x, point.y, isValid(equation, point.x, point.y))
             if (!isValid(equation, point.x, point.y)) {
                sw = false;
             }
@@ -188,19 +195,30 @@ function getValidPoints() {
         point.isValid = sw;
     })
 
-    console.log(points.filter(point => point.isValid == true));
+    //remove duplicates
+    for (var i = 0; i < points.length; i++) {
+        for (var j = i + 1; j < points.length; j++) {
+            if (points[i].x == points[j].x && points[i].y == points[j].y) {
+                points[j].isValid = false;
+            }
+        }
+    }
+
+    console.log('Valid points: ', points.filter(point => point.isValid == true));
 }
 
 var min, max;
 
 function getSolutions() {
     minPoints = [], maxPoints = [];
+    min = undefined;
+    max = undefined;
 
     for (i = 0; i < points.length; i++) {
         if (points[i].isValid) {
             var result = statement.c1 * points[i].x + statement.c2 * points[i].y;
-            console.log(result);
-            console.log(i);
+            //console.log(result);
+            //console.log(i);
             if (result < min || min == undefined) {
                 min = result;
                 minPoints = [points[i]];
@@ -218,18 +236,19 @@ function getSolutions() {
             }
         }
     }
-    
-    console.log(min);
-    console.log(max);
 
     const p = document.querySelector('#result');
     if (statement.problemType == 'max') {
-        p.innerHTML = 'max(f) = ' + max + '<br>' +
-                        'Multimea solutiilor optime: S<sub>o</sub> = {' + maxPoints.map((point, index) => `${String.fromCharCode(65 + index)}(${point.x}, ${point.y})`).join(', ') + '}';
+        console.log('max', max, maxPoints);
+        p.innerHTML = 'Multimea solutiilor posibile: S<sub>p</sub> = {' + points.filter(point => point.isValid == true).map((point, index) => `(${Math.round(point.x * 100) / 100}, ${Math.round(point.y * 100) / 100})`).join(', ') + '}' +'<br>' +
+                        'Multimea solutiilor optime: S<sub>o</sub> = {' + maxPoints.map((point, index) => `${String.fromCharCode(65 + index)}(${Math.round(point.x * 100) / 100}, ${Math.round(point.y * 100) / 100})`).join(', ') + '}' +'<br>' +
+                        'max(f) = ' + Math.round(max * 100) / 100;
     }
     else {
-        p.innerHTML = 'min(f) = ' + min + '<br>' +
-                        'Multimea solutiilor optime: S<sub>o</sub> = ' + minPoints.map(point => `(${point.x}, ${point.y})`).join(', ') + '}';
+        console.log('min', min, minPoints);
+        p.innerHTML = 'Multimea solutiilor posibile: S<sub>p</sub> = {' + points.filter(point => point.isValid == true).map((point, index) => `(${Math.round(point.x * 100) / 100}, ${Math.round(point.y * 100) / 100})`).join(', ') + '}' +'<br>' +
+                        'Multimea solutiilor optime: S<sub>o</sub> = {' + minPoints.map((point, index) => `${String.fromCharCode(65 + index)}(${Math.round(point.x * 100) / 100}, ${Math.round(point.y * 100) / 100})`).join(', ') + '}' +'<br>' +
+                        'min(f) = ' + Math.round(min * 100) / 100;
     }
 }
 
@@ -252,7 +271,7 @@ newConditionBtn.addEventListener('click', () => {
 
 const canvas = document.querySelector('canvas');
 var scale = window.devicePixelRatio;
-console.log(scale);
+//console.log(scale);
 var w = 800;
 var h = 800;
 
@@ -266,7 +285,7 @@ function draw() {
 
     const canvas = document.querySelector('canvas');
     var scale = window.devicePixelRatio;
-    console.log(scale);
+    //console.log(scale);
     var w = 800;
     var h = 800;
 
@@ -291,7 +310,7 @@ for (var i = 0; i < points.length; i++) {
     if (d > dMax) {
         dMax = d;
     }
-    console.log('dMax = ' + dMax)
+    //console.log('dMax = ' + dMax)
 }
 //set scale
 c.scale(w * 0.9 / 2 / dMax, h * 0.9 / 2 / dMax);
@@ -321,7 +340,7 @@ equations.forEach(eq => {
         x2 = -h * scale;
         c.moveTo(x1, x2);
 
-        console.log(x1, x2);
+        //console.log(x1, x2);
 
         x2 = h * scale;
         c.lineTo(x1, x2);
@@ -331,7 +350,7 @@ equations.forEach(eq => {
         x2 = (eq.constant - eq.c1 * x1) / eq.c2;
         c.moveTo(x1, x2);
 
-        console.log(x1, x2);
+        //console.log(x1, x2);
 
         x1 = w * scale;
         x2 = (eq.constant - eq.c1 * x1) / eq.c2;
@@ -339,13 +358,46 @@ equations.forEach(eq => {
     }
 
     c.stroke();    
-    console.log(x1, x2);
+    //console.log(x1, x2);
 })
 
+var current = null;
+c.fillStyle = 'lightblue';
+c.beginPath();
+for (var i = 0; i < points.length; i++) {
+    if (points[i].isValid == true) {
+        current = points[i];
+        current.visted = true;
+        console.log('current', current);
+        c.moveTo(current.x, current.y);
+        break;
+    }
+}
+while(true) {
+    var sw = false;
+    for (var j = 0; j < points.length; j++) {
+        //console.log(current.equations.filter(e => points[j].equations.includes(e)));
+        if (points[j].isValid == true && points[j].visited == false && current.equations.some(e => points[j].equations.includes(e))) {
+            current = points[j];
+            current.visited = true;
+            console.log('current', current);
+            c.lineTo(current.x, current.y);
+            sw = true;
+            break;
+        }
+    }
+    if (sw == false) {
+        break;
+    }
+}
+c.closePath();
+c.fill();
+
+
 c.fillStyle = 'red';
-console.log(statement);
-console.log(minPoints);
-console.log(maxPoints);
+//console.log(statement);
+//console.log(minPoints);
+//console.log(maxPoints);
 if (statement.problemType == 'max') {
     maxPoints.forEach(p => {
         c.beginPath();
@@ -364,4 +416,3 @@ else if (statement.problemType == 'min') {
 c.fillStyle = 'black';
 
 }
-
